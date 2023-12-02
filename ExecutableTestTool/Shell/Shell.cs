@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Diagnostics;
+using System.Security.Cryptography;
 using ExecutableTestTool.Shell.Commands.Abstractions;
 using ExecutableTestTool.Shell.Commands.Parsing.Abstractions;
 using ExecutableTestTool.Shell.Commands.Results;
@@ -39,9 +40,17 @@ public class Shell
             continue;
          }
 
-         foreach (var result in command.Invoke(commandExecutionContext, commandInv.Arguments))
+         Debug.Assert(command != null, "command != null");
+         try
          {
-            result.Output(ui);
+            foreach (var result in command.Invoke(commandExecutionContext, commandInv.Arguments))
+            {
+               result.Output(ui);
+            }
+         }
+         catch (Exception ex)
+         {
+            ui.Error($"During the invocation of command, the unexpected exception was thrown: {ex}");
          }
       }
    }

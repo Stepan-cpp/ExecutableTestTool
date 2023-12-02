@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using ExecutableTestTool.Shell.Commands.Abstractions;
 using ExecutableTestTool.Shell.Commands.Commands.ReflectionCommand;
@@ -8,9 +9,10 @@ namespace ExecutableTestTool.Shell.Commands.Commands;
 
 public class SingleClassCommandProvider : ICommandProvider
 {
-   public static readonly Type CommandsSource = typeof(Commands);
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+    public static readonly Type CommandsSource = typeof(Commands);
 
-   public IDictionary<string, ICommand> Commands { get; }
+    public IDictionary<string, ICommand> Commands { get; }
 
    public SingleClassCommandProvider()
    {
@@ -18,7 +20,7 @@ public class SingleClassCommandProvider : ICommandProvider
       AddCommandsFromClass(CommandsSource, Commands);
    }
 
-   private static void AddCommandsFromClass(Type type, IDictionary<string, ICommand> commands)
+   private static void AddCommandsFromClass([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type type, IDictionary<string, ICommand> commands)
    {
       bool ParametersMatch(ParameterInfo[] p)
       {
