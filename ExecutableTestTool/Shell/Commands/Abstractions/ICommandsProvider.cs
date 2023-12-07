@@ -1,6 +1,6 @@
 ﻿namespace ExecutableTestTool.Shell.Commands.Abstractions;
 
-public interface ICommandProvider
+public interface ICommandsProvider
 {
    /// <summary>
    /// Key of dictionary is alias,
