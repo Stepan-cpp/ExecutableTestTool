@@ -3,7 +3,7 @@ using ExecutableTestTool.Shell.Interface.Datastructures;
 
 namespace ExecutableTestTool.Shell.Interface.Implementations;
 
-public class ConsoleUserInterface : IUserInterface
+internal class ConsoleUserInterface : IUserInterface
 {
    private readonly ConsoleColor errorColor = ConsoleColor.Red;
    private readonly ConsoleColor successColor = ConsoleColor.Green;
@@ -37,7 +37,7 @@ public class ConsoleUserInterface : IUserInterface
    }
 
 
-   public async Task<string> ReadCommandSource(CancellationToken ct)
+   public async Task<string> ReadInputAsync(CancellationToken ct)
    {
       Write(" < ");
       var result = await Console.In.ReadLineAsync(ct);

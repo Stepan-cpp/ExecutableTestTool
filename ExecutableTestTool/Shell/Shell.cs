@@ -8,50 +8,52 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ExecutableTestTool.Shell;
 
-public class Shell
+public class Shell(IUserInterface ui, ICommandParser commandParser, ICommandsProvider commandses)
 {
    public IServiceProvider? ServiceProvider { get; set; }
-   private IUserInterface ui;
-   private ICommandParser commandParser;
-   private ICommandProvider commands;
-   
-   public Shell(IUserInterface ui, ICommandParser commandParser, ICommandProvider commands)
-   {
-      this.ui = ui;
-      this.commandParser = commandParser;
-      this.commands = commands;
-   }
-   
+
    public async Task RunAsync(CancellationToken token = default)
+   {
+      CheckServiceProviderNotNull();
+      
+      ICommandExecutionContext commandExecutionContext = new ShellCommandExecutionContext(ServiceProvider!, ui);
+      while (!token.IsCancellationRequested)
+      {
+         await Tick(commandExecutionContext, token);
+      }
+   }
+
+   private void CheckServiceProviderNotNull()
    {
       if (ServiceProvider == null)
       {
          throw new InvalidOperationException("Service provider should be set before starting shell");
       }
+   }
 
-      ICommandExecutionContext commandExecutionContext = new ShellCommandExecutionContext(ServiceProvider, ui);
-      while (!token.IsCancellationRequested)
+   private async Task Tick(ICommandExecutionContext commandExecutionContext, CancellationToken token = default)
+   {
+      var commandInv = commandParser.Parse(await ui.ReadInputAsync(token));
+      ICommand? command;
+      var commandExists = commandses.Commands.TryGetValue(commandInv.Command, out command);
+      if (!commandExists)
       {
-         var commandInv = commandParser.Parse(await ui.ReadCommandSource(token));
-         var commandExists = commands.Commands.TryGetValue(commandInv.Command, out var command);
-         if (!commandExists)
-         {
-            ui.Error($"Cannot recognize \"{commandInv.Command}\" command");
-            continue;
-         }
+         ui.Error($"Cannot recognize \"{commandInv.Command}\" command");
+         return;
+      }
 
-         Debug.Assert(command != null, "command != null");
-         try
+      Debug.Assert(command != null, "command != null");
+      
+      try
+      {
+         foreach (var result in command.Invoke(commandExecutionContext, commandInv.Arguments))
          {
-            foreach (var result in command.Invoke(commandExecutionContext, commandInv.Arguments))
-            {
-               result.Output(ui);
-            }
+            result.Output(ui);
          }
-         catch (Exception ex)
-         {
-            ui.Error($"During the invocation of command, the unexpected exception was thrown: {ex}");
-         }
+      }
+      catch (Exception ex)
+      {
+         ui.Error($"During the invocation of command, the unexpected exception was thrown: {ex}");
       }
    }
 }

@@ -6,7 +6,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
-        <PublishAot>true</PublishAot>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="EPPlus" Version="7.0.3" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     </ItemGroup>
 

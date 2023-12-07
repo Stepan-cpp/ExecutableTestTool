@@ -6,7 +6,7 @@ using ExecutableTestTool.ProcessTracking.Datastructures;
 
 namespace ExecutableTestTool.ProcessTracking.Implementations;
 
-public class ProcessTracker : IProcessTracker
+internal class ProcessTracker : IProcessTracker
 {
    private Process? Process { get; set; }
    private CancellationTokenSource? Cts { get; set; }

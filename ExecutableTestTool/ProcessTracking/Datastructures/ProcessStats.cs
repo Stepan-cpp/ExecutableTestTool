@@ -7,5 +7,5 @@ public struct ProcessStats
    public DateTime StartTime { get; set; }
    public DateTime ExitTime { get; set; }
    
-   public TimeSpan RunningTime => ExitTime - StartTime;
+   public TimeSpan Runtime => ExitTime - StartTime;
 }

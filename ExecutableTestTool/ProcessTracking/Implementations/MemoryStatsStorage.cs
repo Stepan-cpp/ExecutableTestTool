@@ -3,7 +3,7 @@ using ExecutableTestTool.ProcessTracking.Datastructures;
 
 namespace ExecutableTestTool.ProcessTracking.Implementations;
 
-public class MemoryStatsStorage : IStatsStorage
+internal class MemoryStatsStorage : IStatsStorage
 {
    private LinkedList<ProcessStats> stats = new();
    
